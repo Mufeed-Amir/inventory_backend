@@ -1,12 +1,30 @@
-version: '3'
+version: '3.7'
 services:
-  screenshot:
+  robotics:
     build:
       context: ./
       dockerfile: Dockerfile
+    container_name: Robotics_Revamp
     ports:
       - "3000:3000"
     entrypoint: sleep infinity
     volumes:
       - .:/app/
+    networks:
+      - robotics
     restart: always
+
+  mongo_db:
+    image: mongo:latest
+    container_name: mongo_db
+    ports:
+      - "27017:27017"
+    networks:
+      - robotics
+
+ 
+networks:
+  robotics:
+    name: robotics
+    external: false
+
