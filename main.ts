@@ -1,61 +1,28 @@
-const express = require('express');
 import * as dotenv from 'dotenv';
-import {create_user,find_user} from './src/user';
-const { mongo_client } = require('./src/mongo_db'); 
-const {hashPassword,compare} = require('./src/hash');
+const express = require('express');
 
 dotenv.config();
-
 const app = express ();
 app.use(express.json());
 
+const {fetchUser, createUser,deleteUser,updateUser} = require('./src/api/user')
+const {login} = require('./src/api/auth')
 
-// all api endpoint
-app.post('/create_user', (req, res) => {
-  
-  const body= req.body;
-  const secret=body["password"];
-  
-  console.log(body);
+const {authorisation, getToken} = require('./src/api/auth')
 
-  hashPassword(secret).then((result) => {
-    body['password']=result;
-    console.log("------> ", body);
-    create_user(body);
-  });
 
-  res.send("User added successfully");
+// User api endpoints
+app.post('/user/create', createUser);
+app.get('/user/fetch', authorisation, fetchUser);
+app.put('/user/update', authorisation, updateUser);
+app.delete('/user/delete', authorisation, deleteUser);
+
+// Authentication api endpoints
+app.post('/account/login', login);
+app.post('/account/token', getToken);
+
+
+//hosting app to a port
+app.listen(process.env.PORT, () => {
+     console.log("Server Listening on PORT:", process.env.PORT);
 });
-
-//Login endpoint;
-app.post('/login', (req, res) => {
-  
-  const body= req.body;
-  const secret=body["password"];
-  const email=body["email"];
-
-  find_user(email).then((user_data) => {
-   
-    const hashed=user_data["password"];
-
-    compare(secret, hashed).then((result) => {
-      
-      if (result)
-      res.send("Logged in successfully");
-      else 
-      res.send("Incorrect Password")
-  
-    });
-
-  })
-
-});
-
-
-/////hosting app to a port
-
-const port = process.env.PORT || 4000;
-
-app.listen(port, () => {
-     console.log("Server Listening on PORT:", port);
-   });

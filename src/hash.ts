@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 
-const secretKey = 'sdfsdfed3343'; // Replace with your actual secret key
+const secretKey = process.env.ENCRYPTION_SECRET; // Replace with your actual secret key
 
 async function hashPassword(password) {
 
