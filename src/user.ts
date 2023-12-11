@@ -8,9 +8,10 @@ export async function create_user(data: object) {
     const client = await mongo_client();
     const collection = client.collection('user_data');
 
-    await collection.insertOne(data);
+    return await collection.insertOne(data);
 
     console.log('Data inserted successfully');
+
   } catch (error) {
     console.error('Error inserting data:', error);
   }

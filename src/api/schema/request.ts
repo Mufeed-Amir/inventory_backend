@@ -74,4 +74,12 @@ export class UpdateUser{
      iitk_address:string;
 }
 
+export class credUser{
+     @IsNotEmpty()
+     @IsString()
+     @MaxLength(15,{ message: 'Password must not exceed 15 characters' })
+     @MinLength(5, { message : "Password must contain atleast 5 characters"})
+     password: string;
+}
+
 

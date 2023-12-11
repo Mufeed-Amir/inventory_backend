@@ -8,11 +8,16 @@ import { plainToClass } from 'class-transformer';
 import { CreateUser ,LoginUser,UpdateUser,DeleteUser} from './schema/request';
 
 const { formatError } = require('../api/helper/api_service')
+import { add_cred ,delete_cred ,get_cred,update_cred } from '../cred';
+
+import {ObjectId } from 'mongodb';
 
 
 const fetchUser = (req, res) => {
   
   const user_id = req.user["_id"]
+
+  console.log("-----> ", user_id)
 
   get_user(user_id).then((user_data) => {
 
@@ -33,12 +38,20 @@ const createUser = async (req: Request, res: Response) => {
   if (errors.length > 0)
   return res.status(400).json({ errors: formatError(errors) });
 
-  const body   = req.body;
+  const body = req.body;
 
-  hashPassword(body["password"]).then((result) => {
+  hashPassword(body["password"]).then((hashed_cred) => {
 
-    body['password'] = result;
-    create_user(body);
+    delete body["password"]
+
+    create_user(body).then( (user) => {
+
+      add_cred({
+        user_id: user.insertedId.toString(),
+        cred: hashed_cred
+      })
+
+    })
 
   });
 
@@ -53,25 +66,28 @@ const deleteUser = async(req: any, res: any) => {
   if (errors.length > 0)
     return res.status(400).json({ errors: formatError(errors) });
 
-
   const secret  = req.body["password"];
   const user_id = req.user["_id"];
 
-  get_user(user_id).then((user_data) => {
+  console.log("------> ", user_id)
 
-    const hashed = user_data["password"];
+  get_cred(user_id).then((cred_data)=> {
 
-    compare(secret, hashed).then((result) => {
+      if(! cred_data)
+        res.send("cant fetch user cred")
 
-      if (!result)
-        res.send("Cant delete user, Incorrect Password")
+      compare(secret, cred_data["cred"]).then((result) => {
 
-      delete_user(user_id)
-      res.end("User deleted Seccesfully")
+        if (!result)
+          res.send("Cant delete user, Incorrect Password")
+  
+        delete_user(user_id)
+        delete_cred(user_id)
+        
+        res.end("User deleted Seccesfully")
+      });
+    })  
 
-
-    });
-  })
 }
 
 
@@ -87,7 +103,6 @@ const updateUser = async(req: any, res: any) => {
 
   update_user(body, user_id).then((result) => {
     res.send(result);
-
   });
 };
 

@@ -10,6 +10,8 @@ const {login} = require('./src/api/auth')
 
 const {authorisation, getToken} = require('./src/api/auth')
 
+const {changeHash} =require('./src/api/cred');
+
 
 // User api endpoints
 app.post('/user/create', createUser);
@@ -20,6 +22,10 @@ app.delete('/user/delete', authorisation, deleteUser);
 // Authentication api endpoints
 app.post('/account/login', login);
 app.post('/account/token', getToken);
+
+
+// Change password endpoint
+app.post('/credential/change_password',authorisation,changeHash);
 
 
 //hosting app to a port
