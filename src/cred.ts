@@ -23,7 +23,7 @@ export async function delete_cred(user_id: string) {
 
           const collection = client.collection('credentials');
 
-          const user = await collection.deleteOne({ _id: new ObjectId(user_id) });
+          const user = await collection.deleteOne({ user_id: user_id});
 
           console.log('Password deleted successfully');
 
@@ -40,7 +40,7 @@ export async function update_cred(user_id: string, updated_hash: string) {
           const collection = client.collection('credentials');
 
           console.log('Password changed successfully');
-          return await collection.updateOne({ user_id: user_id }, [{ $set: { cred: updated_hash } }]);
+          return await collection.updateOne({ user_id: user_id }, { $set: { cred: updated_hash } });
 
      } catch (error) {
           console.error('Error in changing password', error);
