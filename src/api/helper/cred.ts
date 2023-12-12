@@ -1,5 +1,4 @@
 const { mongo_client } = require('./mongo_db');
-import { ObjectId } from 'mongodb';
 
 export async function add_cred(data: object) {
      try {

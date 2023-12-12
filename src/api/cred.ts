@@ -1,16 +1,11 @@
 // userRoutes.ts
-import { Request, Response } from 'express';
-import { create_user, get_user, delete_user, update_user } from '../user';
 
-const { hashPassword, compare } = require('../hash');
+const { hashPassword, compare } = require('./helper/hash');
 
-import { validate } from 'class-validator';
-import { plainToClass } from 'class-transformer';
-import { credUser} from './schema/request';
 
-const { formatError } = require('../api/helper/api_service')
+const { formatError } = require('./helper/api_service')
 
-import { get_cred,update_cred } from '../cred';
+import { get_cred,update_cred } from './helper/cred';
 
 
 const changeHash = (req, res) => {

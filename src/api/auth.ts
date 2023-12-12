@@ -1,15 +1,15 @@
 import { Request, Response } from 'express';
 const jwt = require('jsonwebtoken');
 
-import { create_user, get_user, delete_user, update_user } from '../user';
-const { compare } = require('../hash');
+import {get_user} from './helper/user';
+const { compare } = require('./helper/hash');
 
-const { gentoken } = require('../auth')
+const { gentoken } = require('./helper/auth')
 
 import { LoginUser } from './schema/request';
 import { validate } from 'class-validator';
 import { plainToClass } from 'class-transformer';
-import { get_cred } from '../cred';
+import { get_cred } from './helper/cred';
 
 
 

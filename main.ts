@@ -12,6 +12,8 @@ const {authorisation, getToken} = require('./src/api/auth')
 
 const {changeHash} =require('./src/api/cred');
 
+const {addStock,getStock,removeStock,updateStock} = require('./src/api/stock');
+
 
 // User api endpoints
 app.post('/user/create', createUser);
@@ -27,8 +29,15 @@ app.post('/account/token', getToken);
 // Change password endpoint
 app.post('/credential/change_password',authorisation,changeHash);
 
+// stocks api endpoints
+app.post('/stock',addStock);
+app.get('/stock/:stockId',getStock);
+app.delete('/stock/:stockId',removeStock)
+app.put('/stock/:stockId',updateStock)
 
-//hosting app to a port
+
+
+// hosting app to a port
 app.listen(process.env.PORT, () => {
      console.log("Server Listening on PORT:", process.env.PORT);
 });

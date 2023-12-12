@@ -1,16 +1,15 @@
 // userRoutes.ts
 import { Request, Response } from 'express';
-import { create_user, get_user, delete_user, update_user } from '../user';
-const { hashPassword, compare } = require('../hash');
+import { create_user, get_user, delete_user, update_user } from './helper/user';
+const { hashPassword, compare } = require('./helper/hash');
 
 import { validate } from 'class-validator';
 import { plainToClass } from 'class-transformer';
-import { CreateUser ,LoginUser,UpdateUser,DeleteUser} from './schema/request';
+import { CreateUser, UpdateUser, DeleteUser} from './schema/request';
 
-const { formatError } = require('../api/helper/api_service')
-import { add_cred ,delete_cred ,get_cred,update_cred } from '../cred';
+const { formatError } = require('./helper/api_service')
+import { add_cred ,delete_cred ,get_cred} from './helper/cred';
 
-import {ObjectId } from 'mongodb';
 
 
 const fetchUser = (req, res) => {
