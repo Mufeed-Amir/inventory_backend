@@ -14,6 +14,8 @@ const {changeHash} =require('./src/api/cred');
 
 const {addStock,getStock,removeStock,updateStock} = require('./src/api/stock');
 
+const {issueItem ,returnItem} =require('./src/api/invent');
+
 
 // User api endpoints
 app.post('/user/create', createUser);
@@ -36,8 +38,11 @@ app.delete('/stock/:stockId',removeStock)
 app.put('/stock/:stockId',updateStock)
 
 
+// Inventory api endpoints
+app.post('/inventory/:stockId/:quantity',authorisation,issueItem);
+app.put('/inventory/:itemId/:quantity',authorisation,returnItem);
 
-// hosting app to a port
+// hosting app to a ports
 app.listen(process.env.PORT, () => {
      console.log("Server Listening on PORT:", process.env.PORT);
 });
