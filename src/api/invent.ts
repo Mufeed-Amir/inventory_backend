@@ -7,16 +7,17 @@ const issueItem = (req, res) => {
   
      const user_id = req.user["_id"];
      const stock_id = req.params.stockId;
-     const count = req.params.quantity ;
+     const count = Number(req.params.quantity) ;
 
-     issue_item(user_id,stock_id,count).then((ack)=> {
+     issue_item(user_id, stock_id, count).then((ack)=> {
      if(ack)
            res.send(ack.insertedId);
-     else
-          res.send("couldn't add the item")
-  })
-};
 
+  }).catch((error) => {
+     res.send(error.message)
+  })
+
+};
 
 const returnItem = (req, res) => {
   

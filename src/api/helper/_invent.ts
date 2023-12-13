@@ -1,11 +1,13 @@
 
 const { mongo_client } = require('./mongo_db');
 import { ObjectId } from 'mongodb';
+import { get_stock, update_stock } from './_stock';
+import { callbackify } from 'util';
 
 
 
 
-export async function get_item( _item_id: string) {
+export async function get_item( _item_id: string){
      try {
 
           const client = await mongo_client();
@@ -31,9 +33,10 @@ export async function remove_item( _item_id: string) {
      }
 }
 
-export async function update_item( _item_id: string, updated_count: number) {
-     try {
 
+export async function update_item( _item_id: string, updated_count: number) {
+
+     try {
           const client = await mongo_client();
           const collection = client.collection('inventory');
 
@@ -44,29 +47,37 @@ export async function update_item( _item_id: string, updated_count: number) {
      }
 }
 
-export async function issue_item( _user_id: string , _stock_id : string, _count : number) {
-     try {
-
-          // TODO: add logic to update item count if item is reissue rather than create new entry
-
-          const client = await mongo_client();
-          const collection = client.collection('inventory');
-          
-          const item_data = { user_id : _user_id ,
-                               stock_id : _stock_id ,
-                               count : _count,
-                         };
-
-          console.log('item added successfully');
-
-          return await collection.insertOne(item_data);
-
-     } catch (error) {
-          console.error('Error inserting data:', error);
-     }
-}
 
 
+
+export async function issue_item(_user_id: string, _stock_id: string, _count: number) {
+     
+       const client = await mongo_client();
+       const collection = client.collection('inventory');
+   
+       const stock_data = await get_stock(_stock_id);
+   
+       const _available = stock_data["available"];
+
+       if (_available < _count) 
+         throw new Error("Can't issue more than available");
+
+        stock_data["available"] = _available - _count;
+        stock_data["distributed"] += _count;
+        await update_stock(_stock_id, stock_data);
+       
+       const item_data = {
+         user_id: _user_id,
+         stock_id: _stock_id,
+         count: _count,
+       };
+   
+       console.log('item added successfully');
+   
+       return await collection.insertOne(item_data);
+
+   }
+   
 export async function return_item( _item_id : string, _count : number) {
      try {
 
@@ -91,7 +102,7 @@ export async function return_item( _item_id : string, _count : number) {
           })
 
      } catch (error) {
-          console.error('Error inserting data:', error);
+          console.error('Error returning item:', error);
      }
 }
 

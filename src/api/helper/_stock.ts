@@ -10,8 +10,8 @@ export async function add_stock( _name: string , _count : number) {
           const collection = client.collection('stocks');
           
           const stock_data ={ name  : _name,
-                              count : _count,
-                              available : _count,
+                              count : Number(_count),
+                              available : Number(_count),
                               distributed : 0
                               };
 
