@@ -14,7 +14,7 @@ const {changeHash} =require('./src/api/cred');
 
 const {addStock,getStock,removeStock,updateStock} = require('./src/api/stock');
 
-const {issueItem ,returnItem} =require('./src/api/invent');
+const {issueItem ,returnItem, getUserInventory} =require('./src/api/invent');
 
 
 // User api endpoints
@@ -41,6 +41,7 @@ app.put('/stock/:stockId',updateStock)
 // Inventory api endpoints
 app.post('/inventory/:stockId/:quantity',authorisation,issueItem);
 app.put('/inventory/:itemId/:quantity',authorisation,returnItem);
+app.get('/inventory/fetch', authorisation, getUserInventory)
 
 // hosting app to a ports
 app.listen(process.env.PORT, () => {
